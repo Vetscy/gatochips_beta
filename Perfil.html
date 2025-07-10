@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Gato Chips</title>
+    <link rel="icon" type="image/gif" href="icons/funny-cat-eating-chips.gif">
+    <link rel="stylesheet" href="styles/modern.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="theme-color" content="#7289da">
+    <link rel="stylesheet" href="styles/modern-footer.css">
+    <style>
+    /* ...existing code... */
+    .perfil-container {
+        max-width: 820px;
+        margin: 48px auto 48px auto;
+        background: var(--background-secondary);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 1.5px 8px var(--primary);
+        border: 2.5px solid var(--primary);
+        padding: 48px 40px 40px 40px;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 40px;
+        animation: fadeInPanel 0.25s cubic-bezier(.4,1.4,.6,1);
+        color: var(--text-primary);
+    }
+    @keyframes fadeInPanel {
+      from { opacity: 0; transform: translateY(30px);}
+      to   { opacity: 1; transform: translateY(0);}
+    }
+    .perfil-avatar {
+        flex: 0 0 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    .perfil-avatar-img-wrapper {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 0;
+        cursor: pointer;
+        transition: box-shadow 0.15s;
+    }
+    .perfil-avatar-img-wrapper:hover .perfil-avatar-edit,
+    .perfil-avatar-img-wrapper.editing .perfil-avatar-edit {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .perfil-avatar-img-wrapper img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary);
+        background: var(--background-tertiary);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: box-shadow 0.15s;
+    }
+    .perfil-avatar-edit {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: 38px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        border-radius: 0 0 50% 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        z-index: 2;
+    }
+    .perfil-avatar-edit i {
+        margin-right: 6px;
+        font-size: 1.1em;
+    }
+    .perfil-avatar input[type="file"] {
+        display: none;
+    }
+    .perfil-info {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        min-width: 0;
+    }
+    .perfil-nome {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        margin-top: 0;
+        word-break: break-word;
+    }
+    .perfil-nome-edit {
+        width: 100%;
+        max-width: 340px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1.15rem;
+        background: var(--background-tertiary);
+        color: var(--text-primary);
+        outline: none;
+        margin-bottom: 8px;
+        font-family: 'Inter',sans-serif;
+        text-align: left;
+        margin-top: 8px;
+        display: none;
+    }
+    .perfil-nome-edit:focus {
+        border: 1.5px solid var(--primary);
+    }
+    .perfil-nome-view {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+        margin-top: 0;
+        word-break: break-word;
+        display: block;
+    }
+    .perfil-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface);
+        color: var(--primary);
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 18px;
+        margin-top: 0;
+        border: 1.5px solid var(--primary);
+    }
+    .perfil-edit-btn, .perfil-save-btn, .perfil-cancel-btn {
+        margin-top: 18px;
+        padding: 10px 0;
+        background: var(--primary);
+        color: var(--background-secondary);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1.08rem;
+        transition: background 0.15s;
+        width: 100%;
+        max-width: 220px;
+        box-shadow: 0 1.5px 8px var(--primary);
+        display: block;
+    }
+    .perfil-edit-btn {
+        background: var(--background-secondary);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+    .perfil-edit-btn:hover {
+        background: var(--primary);
+        color: var(--background-secondary);
+    }
+    .perfil-save-btn:hover, .perfil-cancel-btn:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+    .perfil-cancel-btn {
+        background: var(--background-tertiary);
+        color: var(--text-primary);
+        border: none;
+        margin-top: 10px;
+    }
+    @media (max-width: 900px) {
+        .perfil-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 32px 8px 24px 8px;
+        }
+        .perfil-info {
+            align-items: center;
+        }
+        .perfil-nome-edit, .perfil-nome-view {
+            text-align: center;
+        }
+    }
+
+    /* ===== LOGIN CUSTOM MODERN ===== */
+    .custom-login-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.7);
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+    .custom-login-panel {
+        background: var(--background-secondary);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 8px var(--primary);
+        border: 2.5px solid var(--primary);
+        max-width: 420px;
+        width: 95vw;
+        margin: 0 auto;
+        padding: 36px 32px 32px 32px;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+        color: var(--text-primary);
+        animation: fadeInPanel 0.25s cubic-bezier(.4,1.4,.6,1);
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+    .custom-login-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        background: rgba(114,137,218,0.09);
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: var(--primary);
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+    }
+    .custom-login-close:hover {
+        background: rgba(114,137,218,0.18);
+    }
+    .custom-login-panel h2 {
+        color: var(--primary);
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 18px;
+        text-align: center;
+        font-size: 2rem;
+        letter-spacing: 0.5px;
+    }
+    .custom-login-panel label {
+        color: var(--text-primary);
+        font-size: 1.08rem;
+        font-weight: 500;
+        margin-bottom: 2px;
+        display: block;
+        margin-top: 18px;
+    }
+    .custom-login-panel input[type="text"] {
+        width: 100%;
+        padding: 8px 10px;
+        margin-top: 4px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1.08rem;
+        background: var(--background-tertiary);
+        color: var(--text-primary);
+        outline: none;
+        transition: border 0.15s;
+        font-family: 'Inter',sans-serif;
+    }
+    .custom-login-panel input[type="text"]:focus {
+        border: 1.5px solid var(--primary);
+    }
+    .custom-login-panel input[type="file"] {
+        width: 100%;
+        margin-top: 4px;
+        font-size: 1rem;
+        color: var(--text-primary);
+        background: var(--background-tertiary);
+        border-radius: 8px;
+        border: 1.5px solid var(--border-color);
+        padding: 6px;
+    }
+    .custom-login-panel .custom-login-avatar {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+        margin-bottom: 10px;
+    }
+    .custom-login-panel .custom-login-avatar img {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary);
+        background: var(--background-tertiary);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        display: block;
+    }
+    .custom-login-panel .modern-button {
+        margin-top: 18px;
+        padding: 10px 0;
+        background: var(--primary);
+        color: var(--background-secondary);
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1.08rem;
+        transition: background 0.15s;
+        width: 100%;
+        box-shadow: 0 1.5px 8px var(--primary);
+    }
+    .custom-login-panel .modern-button:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+    @media (max-width: 575px) {
+        .custom-login-panel {
+            padding: 20px 8px 18px 8px;
+        }
+        .custom-login-panel h2 {
+            font-size: 1.3rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header class="modern-header">
+        <nav class="modern-nav">
+            <div class="logo">
+                <div class="logo-symbol">G</div>
+                <span>Gato Chips</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Início</a>
+                <a href="GatoChips.html"><i class="fas fa-cat"></i> Gato Chips</a>
+                <a href="Sobre-Ele.html"><i class="fas fa-info"></i> Sobre</a>
+                <a href="Perfil.html" class="active"><i class="fas fa-user"></i> Perfil</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <form id="perfilForm" autocomplete="off">
+            <div class="perfil-container">
+                <div class="perfil-avatar">
+                    <div class="perfil-avatar-img-wrapper" id="avatarWrapper">
+                        <img id="perfilAvatarImg" src="https://cdn-icons-png.flaticon.com/512/194/194938.png" alt="Avatar">
+                        <div class="perfil-avatar-edit" id="avatarEditBtn">
+                            <i class="fas fa-camera"></i> Alterar foto
+                        </div>
+                        <input type="file" id="perfilAvatarInput" accept="image/*">
+                    </div>
+                </div>
+                <div class="perfil-info">
+                    <span class="perfil-nome-view" id="perfilNomeView"></span>
+                    <input type="text" id="perfilNomeInput" class="perfil-nome-edit" maxlength="24" placeholder="Seu nome" value="Usuário">
+                    <div id="badgesArea">
+                        <!-- Insignias dinâmicas aqui -->
+                    </div>
+                    <!-- Campo para código de badge (apenas para exemplo) -->
+                    <input type="text" id="badgeCodeInput" class="perfil-nome-edit" placeholder="Código de badge" style="display:none;margin-bottom:8px;">
+                    <button type="button" id="badgeCodeBtn" class="perfil-edit-btn" style="display:none;">Adicionar Insignia</button>
+                    <button type="button" class="perfil-edit-btn" id="editarPerfilBtn">
+                        <i class="fas fa-pen"></i> Editar perfil
+                    </button>
+                    <button type="submit" class="perfil-save-btn" id="salvarPerfilBtn" style="display:none;">
+                        <i class="fas fa-save"></i> Salvar Perfil
+                    </button>
+                    <button type="button" class="perfil-cancel-btn" id="cancelarPerfilBtn" style="display:none;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+    <!-- Modal para login personalizado -->
+    <div id="customLoginModal" class="custom-login-modal">
+        <div class="custom-login-panel">
+            <button id="closeCustomLogin" class="custom-login-close"><i class="fas fa-times"></i></button>
+            <h2>Entrar</h2>
+            <label>
+                Nome de usuário:
+                <input id="inputUserName" type="text" maxlength="24" placeholder="Digite seu nome" required>
+            </label>
+            <label>
+                Foto de perfil:
+                <input id="inputUserPic" type="file" accept="image/*">
+            </label>
+            <div class="custom-login-avatar">
+                <img id="previewUserPic" src="" alt="" style="display:none;">
+            </div>
+            <button id="confirmCustomLogin" class="modern-button">Confirmar</button>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <!-- ...existing footer code... -->
+    </footer>
+    <script>
+    // Carregar dados do perfil do localStorage (se houver)
+    function renderBadges() {
+        const badgesArea = document.getElementById('badgesArea');
+        badgesArea.innerHTML = '';
+        const badges = JSON.parse(localStorage.getItem('perfilBadges') || '[]');
+        if (badges.includes('beta')) {
+            badgesArea.innerHTML += `<div class="perfil-badge"><i class="fas fa-crown"></i> Beta Tester</div>`;
+        }
+        if (badges.includes('fundador')) {
+            badgesArea.innerHTML += `<div class="perfil-badge"><i class="fas fa-star"></i> Fundador do Site</div>`;
+        }
+        // Adicione mais badges conforme necessário
+    }
+    function carregarPerfil() {
+        const nome = localStorage.getItem('perfilNome') || 'Usuário';
+        const avatar = localStorage.getItem('perfilAvatar') || 'https://cdn-icons-png.flaticon.com/512/194/194938.png';
+        document.getElementById('perfilNomeInput').value = nome;
+        document.getElementById('perfilNomeView').textContent = nome;
+        document.getElementById('perfilAvatarImg').src = avatar;
+        renderBadges();
+    }
+    carregarPerfil();
+
+    // Estado de edição
+    let editando = false;
+    const editarBtn = document.getElementById('editarPerfilBtn');
+    const salvarBtn = document.getElementById('salvarPerfilBtn');
+    const cancelarBtn = document.getElementById('cancelarPerfilBtn');
+    const nomeInput = document.getElementById('perfilNomeInput');
+    const nomeView = document.getElementById('perfilNomeView');
+    const avatarInput = document.getElementById('perfilAvatarInput');
+    const avatarImg = document.getElementById('perfilAvatarImg');
+    const avatarWrapper = document.getElementById('avatarWrapper');
+    const avatarEditBtn = document.getElementById('avatarEditBtn');
+
+    function setEditMode(on) {
+        editando = on;
+        nomeInput.style.display = on ? 'block' : 'none';
+        nomeView.style.display = on ? 'none' : 'block';
+        editarBtn.style.display = on ? 'none' : 'block';
+        salvarBtn.style.display = on ? 'block' : 'none';
+        cancelarBtn.style.display = on ? 'block' : 'none';
+        avatarEditBtn.style.opacity = on ? '1' : '0';
+        avatarEditBtn.style.pointerEvents = on ? 'auto' : 'none';
+        if (on) {
+            avatarWrapper.classList.add('editing');
+        } else {
+            avatarWrapper.classList.remove('editing');
+        }
+    }
+    setEditMode(false);
+
+    editarBtn.addEventListener('click', function() {
+        setEditMode(true);
+        nomeInput.value = nomeView.textContent;
+        document.getElementById('badgeCodeInput').style.display = 'block';
+        document.getElementById('badgeCodeBtn').style.display = 'block';
+    });
+
+    cancelarBtn.addEventListener('click', function() {
+        setEditMode(false);
+        carregarPerfil();
+        document.getElementById('badgeCodeInput').style.display = 'none';
+        document.getElementById('badgeCodeBtn').style.display = 'none';
+    });
+
+    // Mostrar input file ao clicar no editar foto
+    avatarEditBtn.addEventListener('click', function(e) {
+        if (editando) {
+            avatarInput.click();
+        }
+    });
+
+    // Atualizar avatar ao selecionar arquivo
+    avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                avatarImg.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Salvar perfil
+    document.getElementById('perfilForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nome = nomeInput.value.trim() || 'Usuário';
+        const avatar = avatarImg.src;
+        localStorage.setItem('perfilNome', nome);
+        localStorage.setItem('perfilAvatar', avatar);
+        nomeView.textContent = nome;
+        setEditMode(false);
+        alert('Perfil salvo com sucesso!');
+    });
+
+    document.getElementById('badgeCodeBtn').addEventListener('click', function() {
+        const code = document.getElementById('badgeCodeInput').value.trim();
+        let badges = JSON.parse(localStorage.getItem('perfilBadges') || '[]');
+        if (code === 'betatester2024' && !badges.includes('beta')) {
+            badges.push('beta');
+            localStorage.setItem('perfilBadges', JSON.stringify(badges));
+            renderBadges();
+            alert('Insignia Beta adicionada!');
+        } else if (code === 'fundadorgato2024' && !badges.includes('fundador')) {
+            badges.push('fundador');
+            localStorage.setItem('perfilBadges', JSON.stringify(badges));
+            renderBadges();
+            alert('Insignia de Fundador adicionada!');
+        } else {
+            alert('Código inválido.');
+        }
+    });
+
+    // Exemplo de uso do modal de login:
+    // loginBtn.addEventListener('click', function() {
+    //     document.getElementById('customLoginModal').style.display = 'flex';
+    // });
+    // closeLogin.addEventListener('click', function() {
+    //     document.getElementById('customLoginModal').style.display = 'none';
+    // });
+    </script>
+</body>
+</html>
